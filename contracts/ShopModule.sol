@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "./interface/ShipModule.sol";
 
 contract ShopModule is Ownable, Module {
-  address public scrapMetalAddress; // ERC20 token of scrap metal
+  address public energyAddress; // ERC20 token of energy metal
   mapping(uint256 => address) public modules;
   uint256 public moduleCount = 2;
   uint256 public cost;
@@ -18,8 +18,8 @@ contract ShopModule is Ownable, Module {
   // IF YOU STAKE ON MY SHOP MODULE YOU'RE EFFECTIVELY YIELD FARMINGGGGGGG LFGGG ***
 
   function receiveResource(uint256 _amount) public override {
-    require(IERC20(scrapMetalAddress).balanceOf(msg.sender) > _amount, "Insufficient tokens");
-    IERC20(scrapMetalAddress).transferFrom(msg.sender, address(this), _amount);
+    require(IERC20(energyAddress).balanceOf(msg.sender) > _amount, "Insufficient tokens");
+    IERC20(energyAddress).transferFrom(msg.sender, address(this), _amount);
 
     emit Receive(_amount, address(this));
   }
@@ -27,8 +27,8 @@ contract ShopModule is Ownable, Module {
   // send resource to other module of the ship. Ships have to re-balance resource between sub-modules of the ship.
   function sendResource(uint256 _amount, address _module) public override ownsModules(_module) {
     // module needs to be owned by owner
-    require(IERC20(scrapMetalAddress).balanceOf(address(this)) > _amount, "Insufficient tokens");
-    IERC20(scrapMetalAddress).transferFrom(address(this), _module, _amount);
+    require(IERC20(energyAddress).balanceOf(address(this)) > _amount, "Insufficient tokens");
+    IERC20(energyAddress).transferFrom(address(this), _module, _amount);
 
     emit Emit(_amount, address(this));
   }

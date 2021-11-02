@@ -11,7 +11,7 @@ import "./interface/ShipModule.sol";
 // Spaceships can snap onto other game elements one owns
 // for instance, every base template can own 1 shop.
 contract SpaceshipModule is Ownable, Module {
-  address public scrapMetalAddress; // ERC20 token of scrap metal
+  address public energyAddress; // ERC20 token of energy token
   mapping(uint256 => address) public modules;
   uint256 public moduleCount = 2;
   uint256 public cost;
@@ -21,11 +21,11 @@ contract SpaceshipModule is Ownable, Module {
   event Emit(uint256 _amount, address _owner);
 
   constructor(
-    address _scrapMetalAddress,
+    address _energyAddress,
     address _shopAddress,
     address _storageAddress
   ) {
-    scrapMetalAddress = _scrapMetalAddress;
+    energyAddress = _energyAddress;
     modules[0] = _shopAddress;
     modules[1] = _storageAddress;
     moduleType = "base";
@@ -38,11 +38,11 @@ contract SpaceshipModule is Ownable, Module {
     modules[_nameCode] = _module;
   }
 
-  // receives a ERC-20 token representing "scrap metal" - inspired by FTL. Scrap metal can be
+  // receives a ERC-20 token representing "energy" - inspired by FTL. Energy can be
   // TODO: Turn this into staking rather than other things.
   function receiveResource(uint256 _amount) public override {
-    require(IERC20(scrapMetalAddress).balanceOf(msg.sender) > _amount, "Insufficient tokens");
-    IERC20(scrapMetalAddress).transferFrom(msg.sender, address(this), _amount);
+    require(IERC20(energyAddress).balanceOf(msg.sender) > _amount, "Insufficient tokens");
+    IERC20(energyAddress).transferFrom(msg.sender, address(this), _amount);
 
     emit Receive(_amount, address(this));
   }
@@ -50,8 +50,8 @@ contract SpaceshipModule is Ownable, Module {
   // send resource to other module of the ship. Ships have to re-balance resource between sub-modules of the ship.
   function sendResource(uint256 _amount, address _module) public override ownsModules(_module) {
     // module needs to be owned by owner
-    require(IERC20(scrapMetalAddress).balanceOf(address(this)) > _amount, "Insufficient tokens");
-    IERC20(scrapMetalAddress).transferFrom(address(this), _module, _amount);
+    require(IERC20(energyAddress).balanceOf(address(this)) > _amount, "Insufficient tokens");
+    IERC20(energyAddress).transferFrom(address(this), _module, _amount);
 
     emit Emit(_amount, address(this));
   }
