@@ -5,5 +5,5 @@ pragma solidity >=0.6.0 <0.9.0;
 interface Module {
   function receiveResource(uint256 _amount) external;
 
-  function sendResource(uint256 _amount) external;
+  function sendResource(uint256 _amount, address _module) external;
 }
