@@ -2,8 +2,8 @@
 pragma solidity >=0.6.0 <0.9.0;
 
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 import "./interface/ShipModule.sol";
 
 // TODO: Should this be ERC721?
@@ -12,8 +12,8 @@ import "./interface/ShipModule.sol";
 // for instance, every base template can own 1 shop.
 contract SpaceshipModule is Ownable, Module {
   address public scrapMetalAddress; // ERC20 token of scrap metal
-  mapping(uint256 => address) modules;
-  uint256 moduleCount = 2;
+  mapping(uint256 => address) public modules;
+  uint256 public moduleCount = 2;
   uint256 public cost;
   string public moduleType;
 
@@ -34,7 +34,7 @@ contract SpaceshipModule is Ownable, Module {
 
   // install module
   function installModule(uint256 _nameCode, address _module) public {
-    // get price of module, and add it to cost.
+    require(SpaceshipModule(_module).cost() + cost <= 20, "Exceeds cost"); // get price of module, and add it to cost.
     modules[_nameCode] = _module;
   }
 
