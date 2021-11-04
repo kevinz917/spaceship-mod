@@ -1,15 +1,11 @@
-# Spaceship Mod
+# 🛸 Spaceship Mod
 
-## Spaceship Template
+How can we make on-chain games more modular? What if a plugin ecosystem was governed by a DAO?
 
-Unanswered Questions
+Here, I present a spaceship game. In this game, the player can customize their spaceship by installing modules (plugins). These modules are created by the community, and voted on by the community (DAO). When the community decides to whitelist these modules, an on-chain order is executed to automatically whitelist them.
 
-- Where do I place the "attack" function?
+Every spaceship has three slots that the user can customize: the sentry, the shop, and an extra plugin. The sentry and shop contracts must be one whitelisted by the community, and the third module can be a tradeable NFT.
 
-Product Requirements
-
-- Spaceship can install two sub modules, shop, and storage.
-- Energy is a ERC20 token that is transferred between modules. What's this actually for?
-- Others can attack your spaceship by draining your energy.
+One interesting game mechanic I'm also exploring is the inclusion of a ERC20 token denoting "energy". Users can balance the energy token between each module to provide more to each, and when being attacked, energy will be inversely proportional to the amount of damage done.
 
 Please follow me [here](https://twitter.com/kzdagoof) and reach out [here](https://thekevinz.com/) to jam on ideas!

@@ -17,11 +17,13 @@ library GameTypes {
   struct GameStorage {
     // admin
     address admin;
+    address dao;
     bool paused;
     uint256 maxCost;
     // game state
     address energyToken;
-    mapping(address => Plugin) plugins; // whitelisted elements, ideally controlled by DAO every season.
+    address[] activePlugins; // list of active plugins used in current round
+    mapping(address => Plugin) plugins; // whitelisted plugins, ideally controlled by DAO every season.
     mapping(address => Spaceship) spaceships; // player owned spaceships
     mapping(address => uint256) spaceshipCosts;
   }
