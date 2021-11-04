@@ -23,6 +23,7 @@ contract SpaceshipModule is Ownable {
 
   // receives a ERC-20 token representing "energy" - inspired by FTL. Energy can be spent in future use cases
   // TODO: Transfering energy = staking ... what can we do with this ?
+  // TODO: Finalize this and refactor ...
   function receiveResource(uint256 _amount) public {
     require(IERC20(IGameStorage(gameStorage).energyTokenAddress()).balanceOf(msg.sender) > _amount, "Insufficient tokens");
     IERC20(IGameStorage(gameStorage).energyTokenAddress()).transferFrom(msg.sender, address(this), _amount);
