@@ -4,7 +4,6 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
-// Qs
 // Should energy be a ERC20 token to begin with? How is energy harnesssed?
 
 // Energy is a ERC20 Token

@@ -3,7 +3,7 @@ import { ethers as Ethers } from "ethers";
 import { ethers } from "hardhat";
 import { revertMessages } from "./helper";
 
-describe("PROGRAM_NAME", () => {
+describe("Spaceship", () => {
   let nftContract: Ethers.Contract;
   let addr1: any;
   let addr2: any;
