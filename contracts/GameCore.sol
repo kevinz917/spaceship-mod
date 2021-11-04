@@ -77,6 +77,10 @@ contract GameCore is GameStorage {
     s.plugins[_module].active = false;
   }
 
+  function setDAOaddress(address _dao) public onlyAdmin {
+    s.dao = _dao;
+  }
+
   ///////////////////////////////////
   //////////  MODIFIERS ////////////
   ///////////////////////////////////
