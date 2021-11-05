@@ -3,35 +3,35 @@ pragma solidity >=0.6.0 <0.9.0;
 
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
-import "../interface/IShipModule.sol";
-import "../GameStorage.sol";
+import "./ModuleBaseTemplate.sol";
 
 // TODO: Add ship interface
-contract ShopModule is Ownable {
-  address gameStorage;
+contract ShopModule is ModuleBaseTemplate, ERC721 {
+  string public metadatUrl;
+  uint256 public tokenId;
+  address public donationRecipient;
+  mapping(uint256 => string) public tokenURIs;
 
-  event Receive(uint256 _amount, address _owner);
-  event Emit(uint256 _amount, address _owner);
-
-  constructor(address _gameStorage) {
-    gameStorage = _gameStorage;
+  constructor(
+    address _gameStorage,
+    string memory _metadataURL,
+    address _donationRecipient
+  ) ModuleBaseTemplate(_gameStorage) ERC721("Badge", "BDG") {
+    metadatUrl = _metadataURL;
+    donationRecipient = _donationRecipient;
   }
 
-  // IF YOU STAKE ON MY SHOP MODULE YOU'RE EFFECTIVELY YIELD FARMINGGGGGGG LFGGG ***
-
-  function receiveResource(uint256 _amount) public {
+  // In this example shop module, players can receive donations into a designated address in return
+  // for a memorabilia NFT
+  function donateEnergyTokens(uint256 _amount) public payable {
     require(IERC20(IGameStorage(gameStorage).energyTokenAddress()).balanceOf(msg.sender) > _amount, "Insufficient tokens");
-    IERC20(IGameStorage(gameStorage).energyTokenAddress()).transferFrom(msg.sender, address(this), _amount);
-
-    emit Receive(_amount, address(this));
+    IERC20(IGameStorage(gameStorage).energyTokenAddress()).transferFrom(msg.sender, donationRecipient, _amount);
+    tokenURIs[tokenId] = metadatUrl;
+    _mint(msg.sender, tokenId);
+    tokenId++;
   }
 
-  // send resource to other module of the ship. Ships have to re-balance resource between sub-modules of the ship.
-  function sendResource(uint256 _amount, address _module) public {
-    require(IERC20(IGameStorage(gameStorage).energyTokenAddress()).balanceOf(address(this)) > _amount, "Insufficient tokens");
-    IERC20(IERC20(IGameStorage(gameStorage).energyTokenAddress())).transferFrom(address(this), _module, _amount);
-
-    emit Emit(_amount, address(this));
+  function tokenURI(uint256 _tokenid) public view override returns (string memory) {
+    return tokenURIs[_tokenid];
   }
 }

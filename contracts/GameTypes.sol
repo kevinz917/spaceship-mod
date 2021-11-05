@@ -19,7 +19,7 @@ library GameTypes {
     address admin;
     address dao;
     bool paused;
-    uint256 maxCost;
+    uint256 maxCost; // max cost per spaceship
     // game state
     address energyToken;
     address[] activePlugins; // list of active plugins used in current round

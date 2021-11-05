@@ -1,6 +1,8 @@
 //SPDX-License-Identifier: MIT
 pragma solidity >=0.6.0 <0.9.0;
 
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+// import "./interface/IGameStorage";
 import "./GameTypes.sol";
 import "./GameStorage.sol";
 
@@ -10,6 +12,8 @@ contract GameCore is GameStorage {
   ///////////////////////////////////
   /////// SPACESHIP CONTROL /////////
   ///////////////////////////////////
+
+  event Attack(uint256 _damage, uint256 _attacker, uint256 _target);
 
   // Install spaceship module
   function installPlugin(address _module) public {
@@ -37,6 +41,14 @@ contract GameCore is GameStorage {
   // Get current cost of spaceship
   function getCurrentCost() public view returns (uint256) {
     return s.spaceshipCosts[msg.sender];
+  }
+
+  // Attack spaceship
+  function attackSpaceship(address _targetPlayer, address _targetModuleAddress) public {
+    // In a game like Darkforest this needs to be enforced with a ZKP
+    uint256 stakedEnergyAmount = IERC20(energyTokenAddress()).balanceOf(_targetModuleAddress);
+    uint256 attackAmount = stakedEnergyAmount; // TODO: get random value based on energy it has on module
+    IERC20(energyTokenAddress()).transferFrom(_targetPlayer, address(0), attackAmount);
   }
 
   ///////////////////////////////////
