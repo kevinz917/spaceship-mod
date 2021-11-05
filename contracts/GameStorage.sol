@@ -10,4 +10,21 @@ contract GameStorage is IGameStorage {
   function energyTokenAddress() public view override returns (address) {
     return s.energyToken;
   }
+
+  function adminAddress() public view returns (address) {
+    return s.admin;
+  }
+
+  function daoAddress() public view returns (address) {
+    return s.dao;
+  }
+
+  function maxCost() public view returns (uint256) {
+    return s.maxCost;
+  }
+
+  // TODO: Look into if I actually need these
+  function getPlugin(address _plugin) public view returns (GameTypes.Plugin memory) {
+    return s.plugins[_plugin];
+  }
 }

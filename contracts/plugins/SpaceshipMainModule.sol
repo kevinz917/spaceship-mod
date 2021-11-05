@@ -8,9 +8,8 @@ import "./ModuleBaseTemplate.sol";
 // every module created needs to inherit to contain all the values
 contract SpaceshipModule is ModuleBaseTemplate {
   bytes32[] messages;
-  address baseTemplate;
 
-  constructor(address _gameStorage) ModuleBaseTemplate(_gameStorage) {}
+  constructor(address _gameCore) ModuleBaseTemplate(_gameCore) {}
 
   // An example function. It would be interesting to leave a message on someone's spaceship
   function leaveMessage(bytes32 _messages) public {

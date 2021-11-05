@@ -13,19 +13,20 @@ contract ShopModule is ModuleBaseTemplate, ERC721 {
   mapping(uint256 => string) public tokenURIs;
 
   constructor(
-    address _gameStorage,
+    address _gameCore,
     string memory _metadataURL,
     address _donationRecipient
-  ) ModuleBaseTemplate(_gameStorage) ERC721("Badge", "BDG") {
+  ) ModuleBaseTemplate(_gameCore) ERC721("Badge", "BDG") {
     metadatUrl = _metadataURL;
     donationRecipient = _donationRecipient;
   }
 
   // In this example shop module, players can receive donations into a designated address in return
   // for a memorabilia NFT
+  // NOTE: GameCore is inherited. Does this conflict with the storage unit?
   function donateEnergyTokens(uint256 _amount) public payable {
-    require(IERC20(IGameStorage(gameStorage).energyTokenAddress()).balanceOf(msg.sender) > _amount, "Insufficient tokens");
-    IERC20(IGameStorage(gameStorage).energyTokenAddress()).transferFrom(msg.sender, donationRecipient, _amount);
+    require(IERC20(IGameStorage(gameCore).energyTokenAddress()).balanceOf(msg.sender) > _amount, "Insufficient tokens");
+    IERC20(IGameStorage(gameCore).energyTokenAddress()).transferFrom(msg.sender, donationRecipient, _amount);
     tokenURIs[tokenId] = metadatUrl;
     _mint(msg.sender, tokenId);
     tokenId++;

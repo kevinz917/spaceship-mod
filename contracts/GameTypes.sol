@@ -19,8 +19,8 @@ library GameTypes {
     address admin;
     address dao;
     bool paused;
-    uint256 maxCost; // max cost per spaceship
     // game state
+    uint256 maxCost; // max cost per spaceship
     address energyToken;
     address[] activePlugins; // list of active plugins used in current round
     mapping(address => Plugin) plugins; // whitelisted plugins, ideally controlled by DAO every season.

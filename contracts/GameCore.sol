@@ -2,12 +2,19 @@
 pragma solidity >=0.6.0 <0.9.0;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-// import "./interface/IGameStorage";
 import "./GameTypes.sol";
 import "./GameStorage.sol";
 
 contract GameCore is GameStorage {
-  constructor() {}
+  constructor(
+    address _admin,
+    address _dao,
+    uint256 _maxCost
+  ) {
+    s.admin = _admin;
+    s.dao = _dao;
+    s.maxCost = _maxCost;
+  }
 
   ///////////////////////////////////
   /////// SPACESHIP CONTROL /////////
@@ -43,6 +50,7 @@ contract GameCore is GameStorage {
     return s.spaceshipCosts[msg.sender];
   }
 
+  // TODO: Complete functiion
   // Attack spaceship
   function attackSpaceship(address _targetPlayer, address _targetModuleAddress) public {
     // In a game like Darkforest this needs to be enforced with a ZKP
@@ -78,13 +86,13 @@ contract GameCore is GameStorage {
     address _module,
     uint256 _type,
     uint256 _cost
-  ) private {
+  ) public onlyDAO {
     s.plugins[_module] = GameTypes.Plugin({ pluginType: _type, cost: _cost, active: true });
     s.activePlugins.push(_module);
   }
 
   // Remove module from game
-  function blacklistPlugin(address _module) private {
+  function blacklistPlugin(address _module) public onlyDAO {
     require(s.plugins[_module].active == true, "Module doesn't exist");
     s.plugins[_module].active = false;
   }

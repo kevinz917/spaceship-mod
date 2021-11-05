@@ -1,4 +1,6 @@
-## Contract files
+## Plugin Folder
+
+In this folder you'll find the base template for community-created plugins, a main spaceship body module file, and an example shop module.
 
 `ModuleBaseTemplate.sol`
 
