@@ -27,4 +27,8 @@ contract GameStorage is IGameStorage {
   function getPlugin(address _plugin) public view returns (GameTypes.Plugin memory) {
     return s.plugins[_plugin];
   }
+
+  function getSpaceship(address _player) public view returns (GameTypes.Spaceship memory) {
+    return s.spaceships[_player];
+  }
 }

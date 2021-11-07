@@ -29,8 +29,9 @@ contract GameCore is GameStorage {
 
     uint256 _spaceshipType = s.plugins[_module].pluginType; // get plugin type
 
+    // TOOD: Add cost to ship
     if (_spaceshipType == 0) {
-      s.spaceships[msg.sender].sentryPlugin = _module;
+      s.spaceships[msg.sender].mainPlugin = _module;
     } else if (_spaceshipType == 1) {
       s.spaceships[msg.sender].shopPlugin = _module;
     }
@@ -39,7 +40,7 @@ contract GameCore is GameStorage {
   // Remove spacehsip module
   function removePlugin(uint256 _type) public {
     if (_type == 0) {
-      s.spaceships[msg.sender].sentryPlugin = address(0);
+      s.spaceships[msg.sender].mainPlugin = address(0);
     } else if (_type == 1) {
       s.spaceships[msg.sender].shopPlugin = address(0);
     }

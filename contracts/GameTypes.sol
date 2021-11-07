@@ -9,7 +9,7 @@ library GameTypes {
   }
 
   struct Spaceship {
-    address sentryPlugin; // actually ... if these are NFTs, should they be given
+    address mainPlugin; // actually ... if these are NFTs, should they be given
     address shopPlugin;
     uint256 extraPlugin; // maybe this can be a NFT ID
   }

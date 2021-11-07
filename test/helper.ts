@@ -5,6 +5,7 @@ import { ethers as Ethers } from "ethers";
 export const fixtureLoader = waffle.createFixtureLoader();
 
 export const shopMetadataURL = "www.google.com";
+export const EMPTY_ADDRESS = "0x0000000000000000000000000000000000000000";
 export interface World {
   contracts: {
     gameCore: Ethers.Contract;
