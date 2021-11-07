@@ -1,11 +1,12 @@
-//SPDX-License-Identifier: MIT
-pragma solidity >=0.6.0 <0.9.0;
+// SPDX-License-Identifier: GPL-3.0
+pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "./GameTypes.sol";
 import "./GameStorage.sol";
 
 contract GameCore is GameStorage {
+  // initialize with admin address, dao address, max cost of spaceship, and reward
   constructor(
     address _admin,
     address _dao,
@@ -21,6 +22,10 @@ contract GameCore is GameStorage {
   ///////////////////////////////////
 
   event Attack(uint256 _damage, uint256 _attacker, uint256 _target);
+
+  function addReward() public payable onlyAdmin {
+    s.gameRewards = msg.value;
+  }
 
   // Install spaceship module
   function installPlugin(address _module) public {
@@ -52,9 +57,8 @@ contract GameCore is GameStorage {
   }
 
   // TODO: Complete functiion
-  // Attack spaceship
+  // Attack spaceship. // In a game like Darkforest this needs to be enforced with a ZKP
   function attackSpaceship(address _targetPlayer, address _targetModuleAddress) public {
-    // In a game like Darkforest this needs to be enforced with a ZKP
     uint256 stakedEnergyAmount = IERC20(energyTokenAddress()).balanceOf(_targetModuleAddress);
     uint256 attackAmount = stakedEnergyAmount; // TODO: get random value based on energy it has on module
     IERC20(energyTokenAddress()).transferFrom(_targetPlayer, address(0), attackAmount);
@@ -67,6 +71,7 @@ contract GameCore is GameStorage {
   // Every new round, DAOs whitelist a new set of plugins.
   // Current plugins are removed
   function changeRounds(
+    address[] memory _creators,
     address[] memory _modules,
     uint256[] memory _types,
     uint256[] memory _costs
@@ -78,17 +83,19 @@ contract GameCore is GameStorage {
 
     // Add new plugins voted by community for next round
     for (uint256 i = 0; i < _modules.length; i++) {
-      whitelistPlugin(_modules[i], _types[i], _costs[i]);
+      whitelistPlugin(_creators[i], _modules[i], _types[i], _costs[i]);
     }
   }
 
   // Add module to game
   function whitelistPlugin(
+    address _creator,
     address _module,
     uint256 _type,
     uint256 _cost
   ) public onlyDAO {
     s.plugins[_module] = GameTypes.Plugin({ pluginType: _type, cost: _cost, active: true });
+    s.creators[_module] = _creator;
     s.activePlugins.push(_module);
   }
 
@@ -100,6 +107,26 @@ contract GameCore is GameStorage {
 
   function setDAOaddress(address _dao) public onlyAdmin {
     s.dao = _dao;
+  }
+
+  ///////////////////////////////////
+  //////////  FINALIZE GAME /////////
+  ///////////////////////////////////
+
+  // DAO can set winner
+  function setWinner(address _winner) public onlyDAO {
+    s.winner = _winner;
+  }
+
+  // distribute winnings
+  // TODO: Look up best practice for splits from SuperRare / Foundation. TODO: Add safemath
+  function distributeWinnings() public onlyDAO {
+    address _winner = s.winner;
+    payable(_winner).transfer((s.gameRewards / 100) * 98);
+    address creater1 = s.creators[s.spaceships[_winner].mainPlugin]; // fetching plugins winners used
+    address creater2 = s.creators[s.spaceships[_winner].shopPlugin];
+    payable(creater1).transfer((s.gameRewards / 100) * 1);
+    payable(creater2).transfer((s.gameRewards / 100) * 1);
   }
 
   ///////////////////////////////////

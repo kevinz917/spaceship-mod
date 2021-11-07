@@ -6,17 +6,22 @@ export const fixtureLoader = waffle.createFixtureLoader();
 
 export const shopMetadataURL = "www.google.com";
 export const EMPTY_ADDRESS = "0x0000000000000000000000000000000000000000";
+
+export interface contracts {
+  gameCore: Ethers.Contract;
+  spaceshipMainModule: Ethers.Contract;
+  shopModule: Ethers.Contract;
+}
+
+export interface users {
+  user1: any;
+  user2: any;
+  user3: any;
+}
 export interface World {
-  contracts: {
-    gameCore: Ethers.Contract;
-    spaceshipMainModule: Ethers.Contract;
-    shopModule: Ethers.Contract;
-  };
-  users: {
-    user1: any;
-    user2: any;
-    user3: any;
-  };
+  contracts: contracts;
+  users: users;
+  provider: any;
 }
 
 // initialize world params
@@ -28,10 +33,12 @@ export const initializeWorld = async (): Promise<World> => {
   let user2: any;
   let user3: any;
   let user4: any; // donation recipient for shopModule
+  let provider = waffle.provider;
 
   // TODO: Add more initial vending machine locations :)))
   [user1, user2, user3, user4] = await ethers.getSigners();
   gameCore = await (await ethers.getContractFactory("GameCore")).deploy(user1.address, user1.address, 10);
+  await gameCore.addReward({ value: ethers.utils.parseEther("100") });
   spaceshipMainModule = await (await ethers.getContractFactory("SpaceshipModule")).deploy(gameCore.address);
   shopModule = await (await ethers.getContractFactory("ShopModule")).deploy(gameCore.address, shopMetadataURL, user4.address);
 
@@ -46,6 +53,7 @@ export const initializeWorld = async (): Promise<World> => {
       user2,
       user3,
     },
+    provider,
   };
 };
 
