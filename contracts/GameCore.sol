@@ -1,11 +1,14 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.0;
 
+import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "./GameTypes.sol";
 import "./GameStorage.sol";
 
 contract GameCore is GameStorage {
+  using SafeMath for uint256;
+
   // initialize with admin address, dao address, max cost of spaceship, and reward
   constructor(
     address _admin,
@@ -118,15 +121,14 @@ contract GameCore is GameStorage {
     s.winner = _winner;
   }
 
-  // distribute winnings
-  // TODO: Look up best practice for splits from SuperRare / Foundation. TODO: Add safemath
+  // distribute winnings to both winner and also plugin creators!
   function distributeWinnings() public onlyDAO {
     address _winner = s.winner;
-    payable(_winner).transfer((s.gameRewards / 100) * 98);
+    payable(_winner).transfer(s.gameRewards.div(100).mul(98)); // winner gets 98% of winnings
     address creater1 = s.creators[s.spaceships[_winner].mainPlugin]; // fetching plugins winners used
     address creater2 = s.creators[s.spaceships[_winner].shopPlugin];
-    payable(creater1).transfer((s.gameRewards / 100) * 1);
-    payable(creater2).transfer((s.gameRewards / 100) * 1);
+    payable(creater1).transfer(s.gameRewards.div(100));
+    payable(creater2).transfer(s.gameRewards.div(100));
   }
 
   ///////////////////////////////////
